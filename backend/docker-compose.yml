@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  # Web Server Service
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - php
+      - db
+
+  # PHP Service
+  php:
+    build: .
+    volumes:
+      - ./src:/var/www
+    ports:
+      - "9000:9000"
+
+  # Database Service
+  db:
+    image: mysql
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: elofy
+      MYSQL_USER: elofy
+      MYSQL_PASSWORD: elofy
+      MYSQL_ROOT_PASSWORD: elofy
